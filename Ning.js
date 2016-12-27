@@ -38,20 +38,20 @@
              * @param {function} callback Callback function.
              */
             on: function (eventType, delegateFrom, callback) {
-                let trueCallback = null;
-                let trueDelegateFrom = null;
+                let realCallback = null;
+                let realDelegateFrom = null;
 
                 if (arguments.length === 2) {
-                    trueCallback = arguments[1];
+                    realCallback = arguments[1];
                     this.forEach(function (item, index) {
-                        item.addEventListener(eventType, trueCallback);
+                        item.addEventListener(eventType, realCallback);
                     });
                 } else if (arguments.length === 3) {
-                    trueDelegateFrom = document.querySelectorAll(delegateFrom);
+                    realDelegateFrom = document.querySelectorAll(delegateFrom);
                     this.forEach(function (item, index) {
                         item.addEventListener(eventType, function (e) {
-                            for (let i = 0; i < trueDelegateFrom.length; i++) {
-                                if (e.target === trueDelegateFrom[i]) {
+                            for (let i = 0; i < realDelegateFrom.length; i++) {
+                                if (e.target === realDelegateFrom[i]) {
                                     callback(e);
                                 }
                             }
@@ -78,20 +78,20 @@
          * @param {Object} option The object which extended from.
          */
         Ning.extend = function (target, option) {
-            let trueOption = null;
-            let trueTarget = null;
+            let realOption = null;
+            let realTarget = null;
 
             if (arguments.length === 1) {
-                trueTarget = Ning.prototype;
-                trueOption = arguments[0];
+                realTarget = Ning.prototype;
+                realOption = arguments[0];
             } else {
-                trueTarget = arguments[0];
-                trueOption = arguments[1];
+                realTarget = arguments[0];
+                realOption = arguments[1];
             }
 
-            for (let propertyName in trueOption) {
-                if (trueOption.hasOwnProperty(propertyName)) {
-                    trueTarget[propertyName] = trueOption[propertyName];
+            for (let propertyName in realOption) {
+                if (realOption.hasOwnProperty(propertyName)) {
+                    realTarget[propertyName] = realOption[propertyName];
                 }
             }
         };
