@@ -24,11 +24,13 @@
             /**
              * ForEach every element in Ning.
              * @param {function} callback function(item, index).
+             * @returns {Ning}
              */
             forEach: function (callback) {
                 for (let i = 0; i < this.length; i++) {
                     callback(this[i], i);
                 }
+                return this;
             },
 
             /**
@@ -36,6 +38,7 @@
              * @param {String} eventType Event type to attach to.
              * @param  {String}   delegateFrom [optional] The elements delegated form.
              * @param {function} callback Callback function.
+             * @returns {Ning}
              */
             on: function (eventType, delegateFrom, callback) {
                 let realCallback = null;
@@ -47,7 +50,12 @@
                         item.addEventListener(eventType, realCallback);
                     });
                 } else if (arguments.length === 3) {
-                    realDelegateFrom = document.querySelectorAll(delegateFrom);
+                    if(typeof delegateFrom === 'string') {
+                        realDelegateFrom = document.querySelectorAll(delegateFrom);
+                    }else {
+                        realDelegateFrom = delegateFrom;
+                    }
+
                     this.forEach(function (item, index) {
                         item.addEventListener(eventType, function (e) {
                             for (let i = 0; i < realDelegateFrom.length; i++) {
@@ -58,15 +66,19 @@
                         })
                     });
                 }
+
+                return this;
             },
 
             /**
              * Splice the elements selected in Ning.
              * @param from The start  element index.
              * @param amount The amount of elements to remove.
+             * @returns {Ning}
              */
             splice: function (from, amount) {
                 Array.prototype.splice.apply(this, arguments);
+                return this;
             },
 
         };
