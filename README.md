@@ -1,2 +1,2 @@
 # reinventedJQ
-A reinvented(probobly) jQuery like DOM selection library.
+A reinvented(probably) jQuery like DOM selection library.
