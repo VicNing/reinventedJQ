@@ -50,9 +50,9 @@
                         item.addEventListener(eventType, realCallback);
                     });
                 } else if (arguments.length === 3) {
-                    if(typeof delegateFrom === 'string') {
+                    if (typeof delegateFrom === 'string') {
                         realDelegateFrom = document.querySelectorAll(delegateFrom);
-                    }else {
+                    } else {
                         realDelegateFrom = delegateFrom;
                     }
 
@@ -106,6 +106,21 @@
                     realTarget[propertyName] = realOption[propertyName];
                 }
             }
+        };
+
+        /**
+         * Get the CSS style value from the first element in Ning,or set it.
+         * @param {String} styleName The CSS style name to get, or set.
+         * @param {String} value [optional] The CSS style value to set.
+         * @returns {*} Ning object.
+         */
+        Ning.prototype.css = function (styleName, value) {
+            if (arguments.length === 1) {
+                return window.getComputedStyle(this[0], null)[styleName];
+            } else {
+                this[0].style[styleName] = value;
+            }
+            return this;
         };
 
         global.Ning = Ning;
