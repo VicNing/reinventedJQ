@@ -84,6 +84,12 @@
         };
         Ning.prototype.init.prototype = Ning.prototype;
 
+
+        ///////////////////////////////////////////////////////////////////////
+        //                                                                   //
+        //                      static functions                             //
+        //                                                                   //
+        ///////////////////////////////////////////////////////////////////////
         /**
          * Extend the property in option param to the target,or Ning.prototype.
          * @param {Object} target [optional] The target to extend to.
@@ -108,6 +114,12 @@
             }
         };
 
+
+        ///////////////////////////////////////////////////////////////////////
+        //                                                                   //
+        //                    extended prototype functions                   //
+        //                                                                   //
+        ///////////////////////////////////////////////////////////////////////
         /**
          * Get the CSS style value from the first element in Ning,or set it.
          * @param {String} styleName The CSS style name to get, or set.
@@ -145,6 +157,24 @@
                     if (option.height) {
                         item.style.height = option.height;
                     }
+                });
+                return this;
+            }
+        };
+
+        /**
+         * Get attribute of the first selected element,or set attribute from param.
+         * @param {String} attrName The attribute name to get or set.
+         * @param {String} value [optional] The value to set to.
+         * @returns {*} Returns selected attribute or Ning object.
+         */
+        Ning.prototype.attr = function (attrName, value) {
+            if (arguments.length === 1) {
+                return this[0].getAttribute(attrName);
+            }
+            else {
+                this.forEach(function (item, index) {
+                    item.setAttribute(styleName, value);
                 });
                 return this;
             }
