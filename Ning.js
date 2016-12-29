@@ -119,8 +119,35 @@
                 return window.getComputedStyle(this[0], null)[styleName];
             } else {
                 this[0].style[styleName] = value;
+                return this;
             }
-            return this;
+        };
+
+        /**
+         * Get the first element's dimension(i.e. height and width), or set it.
+         * @param {Object} option [optional] The Dimension param to pass.The value of height and width
+         * must be a String with unit, check the example below.
+         * @example
+         * Ning('.sth').dimension({width: '200px', height: '300px'});
+         * @returns {{width: *, height: *}} return the dimension, or Ning object if you set the value.
+         */
+        Ning.prototype.dimension = function (option) {
+            if (arguments.length === 0) {
+                return {
+                    width: window.getComputedStyle(this[0], null)['width'],
+                    height: window.getComputedStyle(this[0], null)['height'],
+                };
+            } else {
+                this.forEach(function (item, index) {
+                    if (option.width) {
+                        item.style.width = option.width;
+                    }
+                    if (option.height) {
+                        item.style.height = option.height;
+                    }
+                });
+                return this;
+            }
         };
 
         global.Ning = Ning;
