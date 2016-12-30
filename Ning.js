@@ -181,21 +181,17 @@
         };
 
         /**
-         * Move an element's position with accelerated speed
+         * Do animation on elements.
+         * @param mode One of 'swing' or 'linear';
          * @param time Amount of time it takes,
-         * @param distance Distance to move to.
+         * @param option The css attribute to animate.
          */
-        Ning.prototype.moveSwing = function (time, distance) {
+        Ning.prototype.animate = function (mode, time, option) {
             this.forEach(function (item, index) {
-                doMoveSwing(item, time, distance);
+                doAnimation(mode, item, time, option);
             });
         };
 
-        Ning.prototype.moveLinear = function (time, distance) {
-            this.forEach(function (item, index) {
-                doMoveLinear(item, time, distance);
-            })
-        };
 
         ///////////////////////////////////////////////////////////////////////
         //                                                                   //
@@ -203,46 +199,61 @@
         //                                                                   //
         ///////////////////////////////////////////////////////////////////////
 
-        /*Actual swing moving function.*/
-        function doMoveSwing(element, time, distance) {
-            function accelerate(t, s) {
-                return 2 * s / (t * t);
-            }
+        /*Actual animate function.*/
+        function inputConfiguration(mode, element, time, option) {
+            let config = {};
+            for (propertyName in option) {
+                if (option.hasOwnProperty(propertyName)) {
+                    let conf = config[propertyName] = {};
+                    conf.from = parseFloat(window.getComputedStyle(element, null)[propertyName]);
+                    conf.to = parseFloat(option[propertyName]);
+                    conf.unit = option[propertyName].replace(/^\d+\.?\d+([A-Za-z]*)$/, '$1');
+                    switch (mode) {
+                        case 'linear':
+                            conf.v = velocity(time, conf.from, conf.to);
+                            conf.calculate = function (passed) {
+                                return conf.from + conf.v * passed + conf.unit;
+                            };
+                            break;
+                        case 'swing':
+                            conf.acc = accelerate(time, conf.from, conf.to);
+                            conf.calculate = function (passed) {
+                                return conf.from + 1 / 2 * conf.acc * ( passed * passed) + conf.unit;
+                            };
+                            break;
+                    }
 
+                }
+            }
+            return config;
+        }
+
+        function accelerate(time, from, to) {
+            return 2 * (to - from) / (time * time);
+        }
+
+        function velocity(time, from, to) {
+            return (to - from) / time;
+        }
+
+        function doAnimation(mode, element, time, option) {
             let time0 = Date.now();
-            let distance0 = element.offsetLeft;
-            let acc = accelerate(time, distance);
+            let config = inputConfiguration(mode, element, time, option);
 
             let timer = setInterval(function () {
                 let passed = Date.now() - time0;
-                if (element.offsetLeft - distance0 < distance) {
-                    element.style.left = (1 / 2) * acc * (passed * passed) + 'px';
-                } else {
-                    element.style.left = distance + 'px';
-                    clearInterval(timer);
+                for (propertyName in config) {
+                    if (passed < time && config.hasOwnProperty(propertyName)) {
+                        element.style[propertyName] = config[propertyName].calculate(passed);
+                    } else {
+                        element.style[propertyName] =
+                            config[propertyName].to + config[propertyName].unit;
+                        clearInterval(timer);
+                    }
                 }
             }, 10);
         }
 
-        /*Actual linear moving function.*/
-        function doMoveLinear(element, time, distance) {
-            function velocity(time, distance) {
-                return distance / time;
-            }
-
-            let time0 = Date.now();
-            let distance0 = element.offsetLeft;
-            let v = velocity(time, distance);
-            let timer = setInterval(function () {
-                let passed = Date.now() - time0;
-                if (element.offsetLeft - distance0 < distance) {
-                    element.style.left = v * passed + 'px';
-                } else {
-                    element.style.left = distance + 'px';
-                    clearInterval(timer);
-                }
-            }, 10);
-        }
 
         global.Ning = Ning;
     }
