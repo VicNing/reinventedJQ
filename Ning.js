@@ -242,12 +242,12 @@
 
             let timer = setInterval(function () {
                 let passed = Date.now() - time0;
-                for (propertyName in config) {
-                    if (passed < time && config.hasOwnProperty(propertyName)) {
-                        element.style[propertyName] = config[propertyName].calculate(passed);
+                for (property in config) {
+                    if (passed < time && config.hasOwnProperty(property)) {
+                        element.style[property] = config[property].calculate(passed);
                     } else {
-                        element.style[propertyName] =
-                            config[propertyName].to + config[propertyName].unit;
+                        element.style[property] =
+                            config[property].to + config[property].unit;
                         clearInterval(timer);
                     }
                 }
