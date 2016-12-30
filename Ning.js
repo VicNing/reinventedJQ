@@ -180,6 +180,70 @@
             }
         };
 
+        /**
+         * Move an element's position with accelerated speed
+         * @param time Amount of time it takes,
+         * @param distance Distance to move to.
+         */
+        Ning.prototype.moveSwing = function (time, distance) {
+            this.forEach(function (item, index) {
+                doMoveSwing(item, time, distance);
+            });
+        };
+
+        Ning.prototype.moveLinear = function (time, distance) {
+            this.forEach(function (item, index) {
+                doMoveLinear(item, time, distance);
+            })
+        };
+
+        ///////////////////////////////////////////////////////////////////////
+        //                                                                   //
+        //                    private static functions                       //
+        //                                                                   //
+        ///////////////////////////////////////////////////////////////////////
+
+        /*Actual swing moving function.*/
+        function doMoveSwing(element, time, distance) {
+            function accelerate(t, s) {
+                return 2 * s / (t * t);
+            }
+
+            let time0 = Date.now();
+            let distance0 = element.offsetLeft;
+            let acc = accelerate(time, distance);
+
+            let timer = setInterval(function () {
+                let passed = Date.now() - time0;
+                if (element.offsetLeft - distance0 < distance) {
+                    element.style.left = (1 / 2) * acc * (passed * passed) + 'px';
+                } else {
+                    element.style.left = distance + 'px';
+                    clearInterval(timer);
+                }
+            }, 10);
+        }
+
+        /*Actual linear moving function.*/
+        function doMoveLinear(element, time, distance) {
+            function velocity(time, distance) {
+                return distance / time;
+            }
+
+            let time0 = Date.now();
+            let distance0 = element.offsetLeft;
+            let v = velocity(time, distance);
+            let timer = setInterval(function () {
+                let passed = Date.now() - time0;
+                if (element.offsetLeft - distance0 < distance) {
+                    element.style.left = v * passed + 'px';
+                } else {
+                    element.style.left = distance + 'px';
+                    clearInterval(timer);
+                }
+            }, 10);
+        }
+
         global.Ning = Ning;
     }
 })
